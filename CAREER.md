@@ -104,7 +104,19 @@ DDS transport means no rosmaster single point of failure, which matters for mult
 
 ### "How would you scale the AGV fleet to 50 robots?"
 
-The lane graph approach hits a scalability wall once the warehouse has hundreds of intersections — the lock contention on edge reservations becomes a bottleneck, and the cost-based allocation becomes expensive. I'd switch to a hierarchical approach: zone managers own subgraphs and expose capacity signals, a global scheduler assigns robots to zones, within-zone traffic handled locally. For the WMS resilience layer the architecture already scales well since it's per-robot task caching.
+Two different limits. Compute is not the first one: the C++ engine plans a route on a 1,600-junction grid in about 80 µs and deadlock detection is cheap. The real limit is congestion. My own study shows 5 robots already spend 31 % of their time waiting in single-lane aisles, so at 50 I would change the layout rules before the code: one-way aisles where the floor allows it, so most head-on conflicts disappear by construction, and zones with a capacity limit so robots queue outside busy areas instead of inside them. In software I would split the floor into zone managers that own their part of the graph, with a global allocator above them, and make the reservation table persistent so a crashed manager can recover the floor.
+
+### "Why do you have both a Python and a C++ traffic manager?"
+
+Python is where I design and debug the algorithm: it is short and readable, and the stress tests run against it. C++ is what the fleet manager runs, because route planning is about 55× faster. Keeping two versions is only safe if they cannot drift, so I made every tie-break explicit (sorted neighbours, distance then name), which makes both deterministic, and a parity test runs the same randomised fleet scenarios through both and checks that every deadlock decision is identical. When I first optimised the C++ version to integer node ids, I numbered nodes in name order precisely so that test would keep passing.
+
+### "What happens when a robot breaks down?"
+
+The fleet manager cancels its Nav2 goal and puts its order back at the front of the queue. The broken robot keeps only what it physically occupies: its node, or the lane and next node if it stopped mid-lane. Every other robot whose route crosses those nodes re-plans around them, and orders whose station it cuts off wait in the queue without blocking the orders behind them. The stress test with random breakdowns found a real bug here: a robot that gave up an order kept its advance claim on the station it was heading to, so nobody could ever use that station again. Now every re-route releases all claims except the physical footprint.
+
+### "How do you know it actually works?"
+
+Three levels. Unit and stress tests check a safety invariant on every tick (no node or aisle ever held by two robots) and liveness (every order completes) over 240,000 randomised orders, including random breakdowns. A ROS integration test runs the real fleet manager node against fake Nav2 servers and checks delivery, breakdown and repair, and WMS outages. And Gazebo runs with full Nav2 stacks produce a KPI report. I also measured baselines: without the traffic manager robots collide half the time, and without deadlock resolution every run freezes.
 
 ### "What would you do differently on the delta robot?"
 
