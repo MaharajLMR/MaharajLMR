@@ -28,7 +28,8 @@ Currently focused on: parallel robot kinematics, multi-robot coordination, and v
 
 3 differential-drive AGVs navigate a 30×20 m simulated warehouse. The fleet keeps running when the WMS link drops — tasks are cached and resynced automatically on reconnect. Deadlock-free traffic via a directed lane graph with proven-acyclic wait-for dependency.
 
-- **23/23** unit tests · **0 deadlocks** over 100 random runs · **0 collisions**
+- **54/54** unit tests · **0 deadlocks** across 100 random 3-robot traversals · **0 collisions** in a 600 s fleet sim
+- **390 tasks/hr** with 3 robots; throughput scales 224 → 439 → 671 tasks/hr from 1 → 3 robots
 - Lane graph: 13 nodes, 28 directed edges, O(1) reservation check
 - Nav2 stack: AMCL + DWB local planner + NavFn A* + slam\_toolbox map
 
@@ -41,7 +42,8 @@ Currently focused on: parallel robot kinematics, multi-robot coordination, and v
 Closed-form IK, FK (sphere-intersection), and analytical Jacobian for a 3-DOF Clavel delta robot in pure C++17 — no numerical solver, no ROS dependency in the math layer. Singularity detection via Jacobian condition number. Gazebo simulation with SDF loop-closing joints.
 
 - FK(IK(p)) round-trip error **< 1 × 10⁻⁹ m** over 10,000 random in-workspace points  
-- IK computation time **< 10 µs** on AMD Ryzen 7
+- IK computation time **≈ 0.2 µs** per call (C++17 −O2, Ryzen 7) — ~480× faster than a numerical solver
+- Also: 6-UPS Stewart platform (closed-form IK, Newton–Raphson FK), min-jerk trajectories with 72% lower peak jerk
 - Jacobian condition number at workspace centre: **1.45** (far from singularity)
 - Workspace: 47.7 % of ±12 cm XY, Z −35 to −65 cm cube
 
@@ -52,11 +54,11 @@ Closed-form IK, FK (sphere-intersection), and analytical Jacobian for a 3-DOF Cl
 ### 5-DOF CNC Lathe Loading Arm · ROS 2 / MoveIt 2 / Gazebo Harmonic
 > *DriveNext RANE SLD Hackathon 2026 — 1st runner-up, ₹75,000*
 
-Digital twin of a physical 5-DOF serial arm that automates CNC lathe loading/unloading. Teach mode lets an operator record a cycle via keyboard jog in minutes; the ROS 2 replay node executes it with MoveIt 2 trajectory planning. STM32 + Dynamixel XM430 hardware.
+Industrial design study of a 5-DOF serial arm that automates CNC lathe loading/unloading, grown from my hackathon concept. Teach mode lets an operator record a cycle via keyboard jog in minutes; the ROS 2 replay node executes it with MoveIt 2 trajectory planning. STM32 + Dynamixel XM430 hardware.
 
-- Load/unload cycle time: **4.75 s** (sim)
-- Max reach: 0.985 m · Payload: 5 kg
-- Teach mode: 8-step cycle recorded → replayed with sub-degree joint accuracy
+- **62/62** unit tests · estimated load/unload cycle **5.55 s** · 0.985 m reach
+- Straight-line Cartesian insert/retract (0.000 mm deviation), diameter-sorted batch scheduling (0 gripper changeovers)
+- Fault monitor (5 fault codes) and an OPC-UA server for SCADA integration
 
 [![cnc-lathe-arm](https://img.shields.io/badge/repo-cnc--lathe--arm-181717?style=flat&logo=github)](https://github.com/MaharajLMR/cnc-lathe-arm)
 
@@ -67,10 +69,10 @@ Digital twin of a physical 5-DOF serial arm that automates CNC lathe loading/unl
 5-class weld defect detection (crack, porosity, undercut, incomplete fusion, good weld) using YOLOv8n. FastAPI inference server with phone browser camera client — point your phone at a weld, get real-time bounding boxes.
 
 - Training pipeline: augmentation + YOLOv8n → ONNX export
-- Inference server: POST /predict → JSON detections in < 50 ms on GTX 1650
+- Inference server: POST /predict → JSON detections (target < 50 ms on GTX 1650; model training pending dataset)
 - Live phone camera demo via HTML5 getUserMedia + fetch
 
-[![weld-defect-detector](https://img.shields.io/badge/repo-weld--defect--detector-181717?style=flat&logo=github)](https://github.com/MaharajLMR/weld-defect-detector)
+*Repo goes public once the dataset is collected with my teammate.*
 
 ---
 
@@ -80,10 +82,10 @@ Digital twin of a physical 5-DOF serial arm that automates CNC lathe loading/unl
 |---|---|
 | Robotics middleware | ROS 2 Jazzy · Nav2 · MoveIt 2 · slam\_toolbox |
 | Simulation | Gazebo Harmonic · RViz 2 |
-| Systems / kinematics | C++17 · CMake · Eigen3 |
+| Systems / kinematics | C++17 · CMake · gtest |
 | Orchestration / analysis | Python 3.12 · NumPy · OpenCV · Matplotlib |
 | CV / ML | YOLOv8 (Ultralytics) · ONNX |
-| Embedded | STM32 (Nucleo-F446RE) · Dynamixel Protocol 2.0 · Arduino |
+| Industrial | OPC-UA (asyncua) · FastAPI |
 | Testing | gtest · pytest · launch\_testing · GitHub Actions |
 | Version control | Git · GitHub |
 

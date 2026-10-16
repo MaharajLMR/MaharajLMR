@@ -6,8 +6,8 @@
 
 **Resilient Warehouse AGV Fleet** · ROS 2 Jazzy, Nav2, C++, Python, Gazebo Harmonic
 - Developed a 3-robot autonomous warehouse fleet with deadlock-free traffic management via a directed lane-graph reservation system; proved acyclicity of wait-for dependency eliminates all deadlocks
-- Implemented WMS link resilience: task cache + automatic resync on reconnect; 23 unit tests, 0 collisions/deadlocks over 100 simulated runs
-- Built Nav2 integration (AMCL + DWB + NavFn A*) with multi-robot namespacing in Gazebo Harmonic; fault injection CLI for failure scenario testing
+- Implemented WMS link resilience: task cache + automatic resync on reconnect; 54 unit tests; 0 deadlocks across 100 random 3-robot traversals; 390 tasks/hr with 0 collisions in a 600 s fleet simulation
+- Configured Nav2 (AMCL + DWB + NavFn) with multi-robot namespaced launch files for Gazebo Harmonic; fault injection CLI for failure scenario testing
 
 **Clavel Delta Parallel Robot** · C++17, ROS 2, Gazebo Harmonic, Python
 - Derived and implemented closed-form inverse/forward kinematics and analytical Jacobian for a Clavel delta robot in pure C++17; FK↔IK round-trip error < 1×10⁻⁹ m over 10,000 random points
@@ -15,12 +15,12 @@
 - Implemented singularity detection via Jacobian condition number; CartesianCommander ROS 2 node rejects configurations with κ > 100; Gazebo SDF loop-closing joints for closed-chain physics
 
 **5-DOF CNC Lathe Loading Arm** · ROS 2, MoveIt 2, Gazebo, STM32, Dynamixel
-- Built digital twin of a competition robot arm (RANE SLD Hackathon 2026 — 1st runner-up, ₹75,000) automating CNC lathe loading/unloading in 4.75 s per cycle
-- Implemented teach mode (keyboard jog → waypoint YAML) + MoveIt 2 replay for rapid cycle programming; STM32F446RE + Dynamixel XM430 firmware with hardware e-stop
+- Scaled my RANE SLD Hackathon 2026 concept (1st runner-up, ₹75,000) into an industrial design study of a 5-DOF CNC lathe loading arm; estimated 5.55 s load/unload cycle at 0.985 m reach
+- Implemented teach mode (keyboard jog → waypoint YAML) + MoveIt 2 replay, straight-line Cartesian insert/retract via damped-least-squares IK, and an OPC-UA server for SCADA integration; 62 unit tests
 
 **Weld Defect Detector** · YOLOv8, FastAPI, Python, OpenCV
 - Built 5-class weld defect detection pipeline (crack, porosity, undercut, incomplete fusion) using YOLOv8n with mosaic/mixup augmentation; FastAPI inference server with phone browser camera client
-- Implemented real-time inference endpoint (< 50 ms on GTX 1650); HTML5 getUserMedia capture → POST → canvas overlay
+- Implemented inference endpoint and HTML5 getUserMedia capture → POST → canvas overlay; Grad-CAM explanations and active-learning sample selection
 
 ---
 
@@ -36,7 +36,7 @@
 > → 3 AGVs navigating a 30×20 m warehouse
 > → Deadlock-free traffic via a directed lane graph (proved: wait-for graph is always acyclic → no deadlock possible)
 > → WMS link resilience: the fleet keeps running when comms drop, resyncs automatically when they come back
-> → 23 unit tests, 0 collisions over 100 runs
+> → 54 unit tests, 0 deadlocks over 100 random runs
 >
 > Everything is open source. Numbers in the README are produced by scripts in the repo — nothing fabricated.
 >
@@ -57,7 +57,7 @@
 > → Critical bug I fixed: parallelogram forearms have a tangential offset τ — the effective length in the radial plane is Lf_eff = √(Lf² − τ²), not Lf. Off-axis error drops from 3.8 mm to < 1e-9 m after this fix.
 > → FK: sphere intersection — subtract sphere equations pairwise to get planes, intersect for line, quadratic with sphere
 >
-> Result: < 1×10⁻⁹ m round-trip error over 10k random points. IK under 10 µs.
+> Result: < 1×10⁻⁹ m round-trip error over 10k random points. IK ≈ 0.2 µs per call.
 >
 > Will be working on parallel robotics research at IIT Madras from November.
 >
