@@ -28,7 +28,7 @@ Currently focused on: parallel robot kinematics, multi-robot coordination, and v
 
 3 differential-drive AGVs run on Nav2 in a 30×20 m Gazebo warehouse. A central traffic manager reserves aisles and intersections, detects wait-for deadlocks and makes one robot step aside. The fleet keeps working when the WMS link drops: tasks are buffered and drained on reconnect.
 
-<!--P1GIF-->
+![Fleet in Gazebo](https://raw.githubusercontent.com/MaharajLMR/resilient-agv-fleet/main/docs/fleet_gazebo.gif)
 
 - **62/62** unit tests · traffic stress test: 6,000 tasks, **0** stuck robots, **0** shared aisle/node
 - Offline model: throughput scales 258 → 505 → 773 tasks/hr from 1 → 3 robots
