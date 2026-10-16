@@ -26,14 +26,14 @@ Currently focused on: parallel robot kinematics, multi-robot coordination, and v
 ### Resilient Warehouse AGV Fleet · ROS 2 Jazzy / Nav2 / Gazebo Harmonic
 > *Bonfiglioli Smart Motion Hackathon 2026 — 2nd runner-up, ₹1 lakh*
 
-Five tote-carrier AGVs run a 40 × 30 m warehouse in Gazebo. A central fleet manager allocates orders by route length and battery, reserves aisles and intersections, resolves deadlocks, and sends robots to charge on their own. Workers and a forklift share the floor; a live web dashboard and a per-run KPI report show what the fleet is doing.
+Five AGVs share one-robot-wide aisles in a 40 × 30 m Gazebo warehouse under a central traffic manager I wrote in C++ (with a Python reference and a parity test proving both decide identically). It reserves aisles and junctions, breaks deadlocks, routes around broken-down robots and survives WMS outages, people and a forklift.
 
 ![Fleet in Gazebo](https://raw.githubusercontent.com/MaharajLMR/resilient-agv-fleet/main/docs/fleet_showcase.gif)
 
-- 10-minute Gazebo run: **9 deliveries, 5 deadlocks resolved, 5 self-initiated charging trips, 0 navigation failures**, through a WMS outage
-- Traffic stress test: 5 robots × 6,000 random orders, **0** stuck robots, **0** shared aisle/node
-- Front + rear safety lidars; AMCL within **1.6 cm** of ground truth; world, map and lane graph from one floor plan
-- Live dashboard (map, robots, battery, forklift, KPIs) and automatic KPI report with charts
+- 240,000 randomised orders (incl. random breakdowns): **0 stuck robots, 0 collisions**; without the traffic manager robots collide 50 % of the time, without deadlock resolution every run freezes
+- C++17 engine (pybind11): **55× faster** route planning than the Python reference, identical decisions
+- Gazebo, 5 robots: 9 deliveries, 5 deadlocks resolved, 5 self-initiated charges, 0 navigation failures
+- CI: ruff, cppcheck, gtest, 97 % coverage of fleet logic, ROS integration test, Docker image
 
 [![resilient-agv-fleet](https://img.shields.io/badge/repo-resilient--agv--fleet-181717?style=flat&logo=github)](https://github.com/MaharajLMR/resilient-agv-fleet)
 
