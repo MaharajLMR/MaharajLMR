@@ -5,8 +5,8 @@
 ### Projects Section
 
 **Resilient Warehouse AGV Fleet** · ROS 2 Jazzy, Nav2, C++, Python, Gazebo Harmonic
-- Developed a 3-robot autonomous warehouse fleet with deadlock-free traffic management via a directed lane-graph reservation system; proved acyclicity of wait-for dependency eliminates all deadlocks
-- Implemented WMS link resilience: task cache + automatic resync on reconnect; 54 unit tests; 0 deadlocks across 100 random 3-robot traversals; 390 tasks/hr with 0 collisions in a 600 s fleet simulation
+- Built a 3-robot ROS 2 / Nav2 warehouse fleet in Gazebo with a central traffic manager: aisle + intersection reservations, wait-for-graph deadlock detection and step-aside resolution (0 stuck robots over 6,000 stress-test tasks)
+- Implemented WMS link resilience: task cache + automatic resync on reconnect; 62 unit tests; WMS outage handling with buffered task replay, verified in Gazebo
 - Configured Nav2 (AMCL + DWB + NavFn) with multi-robot namespaced launch files for Gazebo Harmonic; fault injection CLI for failure scenario testing
 
 **Clavel Delta Parallel Robot** · C++17, ROS 2, Gazebo Harmonic, Python
@@ -14,9 +14,9 @@
 - Solved half-angle (Weierstrass) IK formulation; corrected parallelogram forearm tangential offset (Lf_eff = √(Lf²−τ²)) critical for off-axis accuracy
 - Implemented singularity detection via Jacobian condition number; CartesianCommander ROS 2 node rejects configurations with κ > 100; Gazebo SDF loop-closing joints for closed-chain physics
 
-**5-DOF CNC Lathe Loading Arm** · ROS 2, MoveIt 2, Gazebo, STM32, Dynamixel
+**5-DOF CNC Lathe Loading Arm** · ROS 2, ros2_control, MoveIt 2 config, Gazebo, OPC-UA
 - Scaled my RANE SLD Hackathon 2026 concept (1st runner-up, ₹75,000) into an industrial design study of a 5-DOF CNC lathe loading arm; estimated 5.55 s load/unload cycle at 0.985 m reach
-- Implemented teach mode (keyboard jog → waypoint YAML) + MoveIt 2 replay, straight-line Cartesian insert/retract via damped-least-squares IK, and an OPC-UA server for SCADA integration; 62 unit tests
+- Implemented teach mode (keyboard jog → waypoint YAML) + trajectory-controller replay verified in Gazebo, straight-line Cartesian insert/retract via damped-least-squares IK, and an OPC-UA server for SCADA integration; 62 unit tests
 
 **Weld Defect Detector** · YOLOv8, FastAPI, Python, OpenCV
 - Built 5-class weld defect detection pipeline (crack, porosity, undercut, incomplete fusion) using YOLOv8n with mosaic/mixup augmentation; FastAPI inference server with phone browser camera client
@@ -34,9 +34,9 @@
 >
 > So I rebuilt it properly in ROS 2 Jazzy:
 > → 3 AGVs navigating a 30×20 m warehouse
-> → Deadlock-free traffic via a directed lane graph (proved: wait-for graph is always acyclic → no deadlock possible)
+> → Central traffic manager: aisle + intersection reservations, deadlock detection and step-aside
 > → WMS link resilience: the fleet keeps running when comms drop, resyncs automatically when they come back
-> → 54 unit tests, 0 deadlocks over 100 random runs
+> → 62 unit tests; 6,000-task stress test with 0 stuck robots
 >
 > Everything is open source. Numbers in the README are produced by scripts in the repo — nothing fabricated.
 >
@@ -83,7 +83,9 @@
 
 The project simulates a 3-robot autonomous warehouse fleet in ROS 2 Jazzy and Gazebo Harmonic. The headline feature is resilience: when the warehouse management system link drops, robots finish their currently cached task using the last-validated Nav2 path, new idle events buffer internally, and when the link restores the fleet drains the buffer and resyncs completed task IDs. No tasks are lost, no manual intervention.
 
-The other headline is deadlock-free traffic. I modelled the warehouse aisle network as a directed graph with 13 nodes and 28 edges. Each robot holds at most one edge reservation at a time — it releases the current edge before requesting the next. The proof: deadlock requires a cycle in the wait-for graph (A waits for B waits for … waits for A). Since no robot holds two edges simultaneously, the wait-for graph is always a forest, which is acyclic, so deadlock is impossible.
+The other headline is traffic control. The aisles are one robot wide, so the fleet manager drives every robot node to node on a 13-node lane graph, and before each step the robot must hold both the aisle and the next intersection. My first version claimed deadlock was impossible because each robot held only one edge at a time, but that argument ignores that a robot also physically occupies the node it is standing on. The stress test found real deadlocks: two robots facing each other, and a robot waiting at a junction for a station while the robot inside the station needed that junction to get out. So the traffic manager now builds the wait-for graph every 0.25 s, detects cycles, and moves one robot to a free neighbouring node, preferring nodes that are not dead ends and not on the other robot's route, then re-plans. A robot heading into a dead-end station also reserves the station on approach. Over 6,000 randomised tasks in the unit tests (and a 150,000-task sweep offline) no robot got stuck and no aisle or node was ever held by two robots.
+
+Running it in Gazebo for the first time also exposed physical bugs that unit tests could not: the wheel joint axis was flipped so the robot drove backwards while odometry said forwards, and the lidar scan plane cut through the wheel tops, so Nav2's collision monitor saw the robot's own wheels and refused to move.
 
 ### "How does your delta robot IK work?"
 
