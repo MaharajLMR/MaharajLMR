@@ -26,14 +26,14 @@ Currently focused on: parallel robot kinematics, multi-robot coordination, and v
 ### Resilient Warehouse AGV Fleet · ROS 2 Jazzy / Nav2 / Gazebo Harmonic
 > *Bonfiglioli Smart Motion Hackathon 2026 — 2nd runner-up, ₹1 lakh*
 
-3 differential-drive AGVs run on Nav2 in a 30×20 m Gazebo warehouse. A central traffic manager reserves aisles and intersections, detects wait-for deadlocks and makes one robot step aside. The fleet keeps working when the WMS link drops: tasks are buffered and drained on reconnect.
+3 tote-carrier AGVs (front + rear safety lidars) run on Nav2 in a Gazebo model of an AWS RoboMaker warehouse. A central traffic manager reserves aisles and intersections, detects wait-for deadlocks and makes one robot step aside. The fleet keeps working when the WMS link drops: tasks are buffered and drained on reconnect.
 
-![Fleet in Gazebo](https://raw.githubusercontent.com/MaharajLMR/resilient-agv-fleet/main/docs/fleet_gazebo.gif)
+![Fleet in Gazebo](https://raw.githubusercontent.com/MaharajLMR/resilient-agv-fleet/main/docs/fleet_showcase.gif)
 
 - **62/62** unit tests · traffic stress test: 6,000 tasks, **0** stuck robots, **0** shared aisle/node
 - Offline model: throughput scales 258 → 505 → 773 tasks/hr from 1 → 3 robots
 - Found and fixed by running the sim: reversed wheel axis, lidar seeing its own wheels, shared topics across robots
-- Nav2 per robot: AMCL + NavFn + DWB + collision monitor; map rasterised from the world SDF
+- AMCL localization within **1.6 cm** of ground truth; world and Nav2 map generated from one floor plan
 
 [![resilient-agv-fleet](https://img.shields.io/badge/repo-resilient--agv--fleet-181717?style=flat&logo=github)](https://github.com/MaharajLMR/resilient-agv-fleet)
 

@@ -5,7 +5,7 @@
 ### Projects Section
 
 **Resilient Warehouse AGV Fleet** · ROS 2 Jazzy, Nav2, C++, Python, Gazebo Harmonic
-- Built a 3-robot ROS 2 / Nav2 warehouse fleet in Gazebo with a central traffic manager: aisle + intersection reservations, wait-for-graph deadlock detection and step-aside resolution (0 stuck robots over 6,000 stress-test tasks)
+- Built a 3-AGV ROS 2 / Nav2 fleet in a Gazebo warehouse (dual safety lidars, AMCL within 1.6 cm of ground truth) with a central traffic manager: aisle + intersection reservations, wait-for-graph deadlock detection and step-aside resolution (0 stuck robots over 6,000 stress-test tasks)
 - Implemented WMS link resilience: task cache + automatic resync on reconnect; 62 unit tests; WMS outage handling with buffered task replay, verified in Gazebo
 - Configured Nav2 (AMCL + DWB + NavFn) with multi-robot namespaced launch files for Gazebo Harmonic; fault injection CLI for failure scenario testing
 
