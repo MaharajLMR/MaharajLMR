@@ -5,7 +5,7 @@
 ### Projects Section
 
 **Resilient Warehouse AGV Fleet** · ROS 2 Jazzy, Nav2, C++, Python, Gazebo Harmonic
-- Built a 3-AGV ROS 2 / Nav2 fleet in a Gazebo warehouse (dual safety lidars, AMCL within 1.6 cm of ground truth) with a central traffic manager: aisle + intersection reservations, wait-for-graph deadlock detection and step-aside resolution (0 stuck robots over 6,000 stress-test tasks)
+- Built a 5-AGV ROS 2 / Nav2 fleet in a 40 × 30 m Gazebo warehouse with a central traffic manager (aisle + intersection reservations, wait-for-graph deadlock resolution), battery-aware allocation with automatic charging, and a live web dashboard; 9 deliveries and 0 navigation failures in a 10-minute run with people, a forklift and a WMS outage
 - Implemented WMS link resilience: task cache + automatic resync on reconnect; 62 unit tests; WMS outage handling with buffered task replay, verified in Gazebo
 - Configured Nav2 (AMCL + DWB + NavFn) with multi-robot namespaced launch files for Gazebo Harmonic; fault injection CLI for failure scenario testing
 
@@ -28,17 +28,17 @@
 
 ### Post 1 — After P1 competition
 
-> Just wrapped up building the simulation version of the AGV fleet I took to the Bonfiglioli Smart Motion Hackathon 2026 (2nd runner-up 🏆).
+> Just wrapped up building the simulation version of the AGV fleet I took to the Bonfiglioli Smart Motion Hackathon 2026 (2nd runner-up).
 >
 > The real robot was fun. The software was... improvised.
 >
 > So I rebuilt it properly in ROS 2 Jazzy:
-> → 3 AGVs navigating a 30×20 m warehouse
+> → 5 AGVs in a 40 × 30 m warehouse, sharing the floor with workers and a forklift
 > → Central traffic manager: aisle + intersection reservations, deadlock detection and step-aside
 > → WMS link resilience: the fleet keeps running when comms drop, resyncs automatically when they come back
 > → 62 unit tests; 6,000-task stress test with 0 stuck robots
 >
-> Everything is open source. Numbers in the README are produced by scripts in the repo — nothing fabricated.
+> Everything is open source, and every number in the README comes from a script in the repo.
 >
 > Link in bio. #ROS2 #Robotics #AGV #Mechatronics #OpenSource
 

@@ -26,14 +26,14 @@ Currently focused on: parallel robot kinematics, multi-robot coordination, and v
 ### Resilient Warehouse AGV Fleet · ROS 2 Jazzy / Nav2 / Gazebo Harmonic
 > *Bonfiglioli Smart Motion Hackathon 2026 — 2nd runner-up, ₹1 lakh*
 
-3 tote-carrier AGVs (front + rear safety lidars) run on Nav2 in a Gazebo model of an AWS RoboMaker warehouse. A central traffic manager reserves aisles and intersections, detects wait-for deadlocks and makes one robot step aside. The fleet keeps working when the WMS link drops: tasks are buffered and drained on reconnect.
+Five tote-carrier AGVs run a 40 × 30 m warehouse in Gazebo. A central fleet manager allocates orders by route length and battery, reserves aisles and intersections, resolves deadlocks, and sends robots to charge on their own. Workers and a forklift share the floor; a live web dashboard and a per-run KPI report show what the fleet is doing.
 
 ![Fleet in Gazebo](https://raw.githubusercontent.com/MaharajLMR/resilient-agv-fleet/main/docs/fleet_showcase.gif)
 
-- **62/62** unit tests · traffic stress test: 6,000 tasks, **0** stuck robots, **0** shared aisle/node
-- Offline model: throughput scales 258 → 505 → 773 tasks/hr from 1 → 3 robots
-- Found and fixed by running the sim: reversed wheel axis, lidar seeing its own wheels, shared topics across robots
-- AMCL localization within **1.6 cm** of ground truth; world and Nav2 map generated from one floor plan
+- 10-minute Gazebo run: **9 deliveries, 5 deadlocks resolved, 5 self-initiated charging trips, 0 navigation failures**, through a WMS outage
+- Traffic stress test: 5 robots × 6,000 random orders, **0** stuck robots, **0** shared aisle/node
+- Front + rear safety lidars; AMCL within **1.6 cm** of ground truth; world, map and lane graph from one floor plan
+- Live dashboard (map, robots, battery, forklift, KPIs) and automatic KPI report with charts
 
 [![resilient-agv-fleet](https://img.shields.io/badge/repo-resilient--agv--fleet-181717?style=flat&logo=github)](https://github.com/MaharajLMR/resilient-agv-fleet)
 
@@ -112,5 +112,5 @@ Industrial design study of a 5-DOF serial arm that automates CNC lathe loading/u
 ---
 
 <div align="center">
-<sub>All project numbers are produced by scripts in each repo — nothing is fabricated.</sub>
+<sub>Every project number is produced by a script in its repo.</sub>
 </div>
