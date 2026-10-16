@@ -8,7 +8,7 @@ Things I've built:
 
 <img src="https://raw.githubusercontent.com/MaharajLMR/resilient-agv-fleet/main/docs/fleet_showcase.gif" width="560">
 
-**[cnc-lathe-arm](https://github.com/MaharajLMR/cnc-lathe-arm)**: a 5-axis arm that loads parts into a CNC lathe. You teach it a cycle with the keyboard and it replays it. The idea came from the DriveNext RANE hackathon (1st runner-up); this is a bigger, industrial version of it.
+**[cnc-lathe-arm](https://github.com/MaharajLMR/cnc-lathe-arm)**: a ROS 2 and Gazebo rebuild of the jib arm my team made for the DriveNext RANE hackathon (1st runner-up). It has pot knob control through an ADS1115, a web HMI, and picks a part and puts it in a lathe chuck in simulation. It is a rebuild, not the hackathon code.
 
 <img src="https://raw.githubusercontent.com/MaharajLMR/cnc-lathe-arm/main/docs/load_cycle_gazebo.gif" width="560">
 
