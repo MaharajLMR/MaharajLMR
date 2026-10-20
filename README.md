@@ -12,6 +12,10 @@ Things I've built:
 
 <img src="https://raw.githubusercontent.com/MaharajLMR/cnc-lathe-arm/main/docs/load_cycle_gazebo.gif" width="560">
 
+**[AGV](https://github.com/MaharajLMR/AGV)**: the single robot I built first, to work out how URDF, `ros_gz_bridge` and the diff-drive plugin actually fit together. Small, but it is where I found that my lidar had been mounted at 15° and was returning the floor the whole time.
+
+<img src="https://raw.githubusercontent.com/MaharajLMR/AGV/main/docs/agv_demo.gif" width="560">
+
 Not public yet: delta and Stewart platform kinematics, and a weld defect detector I'm building with a teammate.
 
 I mostly work with ROS 2, C++, Python, Gazebo, Nav2 and ros2_control.
