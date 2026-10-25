@@ -20,4 +20,4 @@ Not public yet: delta and Stewart platform kinematics, and a weld defect detecto
 
 I mostly work with ROS 2, C++, Python, Gazebo, Nav2 and ros2_control.
 
-You can reach me at lmrrajan2005@gmail.com or on [LinkedIn](https://linkedin.com/in/maharaj-lmr).
+You can reach me at maharajlmr.official@gmail.com or on [LinkedIn](https://linkedin.com/in/maharaj-lmr).
