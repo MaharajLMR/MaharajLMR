@@ -1,6 +1,6 @@
 ### Hi, I'm Maharaj
 
-I'm a third-year mechatronics student at Chennai Institute of Technology. Most of my time goes into ROS 2, simulation, and the maths behind robot arms and mobile robots. In November I start a research internship on parallel robots at IIT Madras.
+I'm a third-year mechatronics student at Chennai Institute of Technology. Most of my time goes into ROS 2, simulation, and the maths behind robot arms and mobile robots.
 
 Things I've built:
 
@@ -19,5 +19,7 @@ Things I've built:
 Not public yet: delta and Stewart platform kinematics, and a weld defect detector I'm building with a teammate.
 
 I mostly work with ROS 2, C++, Python, Gazebo, Nav2 and ros2_control.
+
+There is more on [maharajlmr.github.io](https://maharajlmr.github.io), including a delta robot you can drag around.
 
 You can reach me at maharajlmr.official@gmail.com or on [LinkedIn](https://linkedin.com/in/maharaj-lmr).
